@@ -33,9 +33,9 @@ describe('LeveragedYieldFarm', () => {
     leveragedYieldFarm = await hre.ethers.deployContract("LeveragedYieldFarm")
   })
 
-  describe('Swapping 9000 ETH for DAI...', () => {
+  describe('Swapping 1 ETH for DAI...', () => {
     const PATH = [WETH, DAI]
-    const AMOUNT = hre.ethers.parseUnits('9000', 'ether')
+    const AMOUNT = hre.ethers.parseUnits('1', 'ether')
     const DEADLINE = Math.floor(Date.now() / 1000) + 60 * 20
 
     it('Swaps ETH for DAI', async () => {
@@ -63,14 +63,14 @@ describe('LeveragedYieldFarm', () => {
 
   describe('Leveraged Yield Farming on Compound boosted with Balancer flash loan...', () => {
     beforeEach(async () => {
-      // Deposit 10.1 DAI to contract (.1 for additional headroom when withdrawing)
+      // Deposit 100.1 DAI to contract (.1 for additional headroom when withdrawing)
       await dai.connect(deployer).transfer(
         await leveragedYieldFarm.getAddress(),
-        hre.ethers.parseUnits('10.1', 'ether')
+        hre.ethers.parseUnits('100.1', 'ether')
       )
 
-      // Supplying 10 DAI with flash loan to Compound
-      await leveragedYieldFarm.connect(deployer).depositDai(hre.ethers.parseUnits('10', 'ether'))
+      // Supplying 1 DAI with flash loan to Compound
+      await leveragedYieldFarm.connect(deployer).depositDai(hre.ethers.parseUnits('100', 'ether'))
     })
 
     it('Deposits/Waits/Withdraws/Takes Profit...', async () => {
@@ -79,16 +79,16 @@ describe('LeveragedYieldFarm', () => {
       const cDaiBalanceBefore = await cDai.balanceOf(await leveragedYieldFarm.getAddress())
       const compBalanceBefore = await comp.balanceOf(deployer.address)
 
-      // Fast forward 1 block...
+      // Fast forward 100 block...
       // New blocks are validated roughly every ~ 12 seconds
-      const BLOCKS_TO_MINE = 10
+      const BLOCKS_TO_MINE = 100
 
       console.log(`\nFast forwarding ${BLOCKS_TO_MINE} Block...\n`)
 
       await mine(BLOCKS_TO_MINE, { interval: 12 })
 
       // Taking profits
-      await leveragedYieldFarm.connect(deployer).withdrawDai(hre.ethers.parseUnits('10', 'ether'))
+      await leveragedYieldFarm.connect(deployer).withdrawDai(hre.ethers.parseUnits('100', 'ether'))
 
       const ethBalanceAfter = await hre.ethers.provider.getBalance(deployer.address)
       const daiBalanceAfter = await dai.balanceOf(deployer.address)
