@@ -1,24 +1,15 @@
-// Import ethers from Hardhat package
-const { ethers } = require("hardhat");
+const hre = require("hardhat")
 
 async function main() {
-    // Get the contract to deploy
-    const LeveragedYieldFarm = await ethers.getContractFactory("LeveragedYieldFarm");
+  const leveragedYieldFarm = await hre.ethers.deployContract("LeveragedYieldFarm")
+  await leveragedYieldFarm.waitForDeployment()
 
-    // Deploy the contract
-    const leveragedYieldFarm = await LeveragedYieldFarm.deploy();
-
-    // Wait for the deployment to finish
-    await leveragedYieldFarm.deployed();
-
-    console.log("LeveragedYieldFarm deployed to:", leveragedYieldFarm.address);
+  console.log(`Leveraged Yield Farm deployed to ${await leveragedYieldFarm.getAddress()}`)
 }
 
 // We recommend this pattern to be able to use async/await everywhere
 // and properly handle errors.
-main()
-    .then(() => process.exit(0))
-    .catch((error) => {
-        console.error(error);
-        process.exit(1);
-    });
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});
