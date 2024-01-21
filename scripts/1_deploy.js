@@ -1,10 +1,12 @@
 const hre = require("hardhat")
 
 async function main() {
-  const leveragedYieldFarm = await hre.ethers.deployContract("LeveragedYieldFarm")
-  await leveragedYieldFarm.waitForDeployment()
+  const LeveragedYieldFarm = await hre.ethers.getContractFactory("LeveragedYieldFarm")
+  const leveragedYieldFarm = await LeveragedYieldFarm.deploy()
 
-  console.log(`Leveraged Yield Farm deployed to ${await leveragedYieldFarm.getAddress()}`)
+  await leveragedYieldFarm.deployed()
+
+  console.log(`Leveraged Yield Farm deployed to ${leveragedYieldFarm.address}`)
 }
 
 // We recommend this pattern to be able to use async/await everywhere
